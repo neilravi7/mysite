@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1> Create an new article </h1>
+<form action='{% url "article_create" %}' method="post">
+    {% csrf_token %}
+    <!-- <input type="text" , name="title">
+    <textarea name="content"></textarea> -->
+    {{form.as_p}}
+    <input type="submit" name="submit">
+</form>
+{% endblock content %}

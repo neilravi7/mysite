@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2> Search result for: {{query}}</h2>
+<h3> Total: {{total}}</h3>
+{% if articles %}
+    {% for article in articles %}
+        <a href='{% url "article_detail" article.slug %}'>
+            <h4>{{article.title}}</h2>
+        </a>
+    {% endfor %}
+{% endif %}
+{% endblock content %}

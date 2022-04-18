@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if article %}
+    <h1> {{article.title}} </h1>
+    <p>{{article.content}}</p>
+    <p>By:{{request.user.first_name}} {{request.user.last_name}} Number:{{number}}</p>
+{% else %}
+    <h1>{{message}}</h1>
+{% endif %}
+{% endblock content %}

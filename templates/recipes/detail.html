@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if recipe %}
+    <h1> {{recipe.name}} </h1>
+    <p>{{recipe.directions}}</p>
+    <p>By:{{request.user.first_name}} {{request.user.last_name}} Number:657435</p>
+{% else %}
+    <h1>{{message}}</h1>
+{% endif %}
+{% endblock content %}

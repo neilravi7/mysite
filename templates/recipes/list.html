@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="get" action="search">
+    <input type="text" name="query" id="search_term">
+    <input type="submit" id="search_click">
+</form>
+
+<h1> All Available Articles </h1>
+{% if request.user.is_authenticated %}
+{% for recipe in recipes %}
+<a href='{{recipe.get_hidden_url}}'>
+    <h4>{{recipe.name}}</h2>
+</a>
+{% endfor %}
+<a href='{% url "logout" %}'>
+    <h4 style="color: crimson;">Logout</h2>
+</a>
+{% else %}
+<a href='{% url "login" %}'>
+    <h4>login</h2>
+</a>
+{% endif %}
+
+{% endblock content %}
