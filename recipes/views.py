@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from recipes.forms import RecipeForm, RecipeModelForm, RecipeIngredientsModelForm
-from recipes.models import Recipe
+from recipes.models import Recipe, RecipeIngredients
 from mysite.utils import url_encode_utils
 from django.urls import reverse
 # Create your views here.
@@ -46,12 +46,15 @@ def recipe_create_view(request):
     
     context = {
         'form':form,
-        'created':False
+        'created':False,
+        'action':'create_recipe'
     }
     
     if request.method == 'POST':
         form =  RecipeModelForm(request.POST, None)
         context['form'] = form
+        context['action'] = 'create_recipe'
+
         if form.is_valid():
             recipe_obj = form.save(commit=False)
             recipe_obj.user = request.user
@@ -66,7 +69,33 @@ def recipe_ingredients_create_view(request):
     
     context = {
         'form':form,
-        'created':False
+        'created':False,
+        'action':'create_recipe_ingredient'
+    }
+    
+    if request.method == 'POST':
+        form =  RecipeIngredientsModelForm(request.POST, None)
+        context['form'] = form
+        context['action'] = 'create_recipe_ingredient'
+
+        if form.is_valid():
+            recipe_ing_obj = form.save()
+            if recipe_ing_obj.pk:
+                # print("object created")
+                context['object'] = recipe_ing_obj
+                context['created'] = True
+            else:
+                print("Got some error.")
+
+    return render(request, 'recipes/create.html', context=context)
+
+def recipe_ingredients_update_view(request, id):
+    instance = RecipeIngredients.objects.get(id=id)
+    form = RecipeIngredientsModelForm(instance = instance)
+    context = {
+        'form':form,
+        'created':False,
+        'action':'update_recipe_ingredient'
     }
     
     if request.method == 'POST':
@@ -82,3 +111,11 @@ def recipe_ingredients_create_view(request):
                 print("Got some error.")
 
     return render(request, 'recipes/create.html', context=context)
+
+
+def base_template_view(request):
+    context = {
+        "text":"test view of base template."
+    }
+    return render(request, 'main_base.html', context=context)
+    # return render(request, 'test_htmx.html', context=context)

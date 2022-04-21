@@ -7,4 +7,5 @@ urlpatterns=[
     path('<int:number>/<str:enc_string>', views.recipe_detail_view, name='recipe_detail'),
     path('create', views.recipe_create_view, name='recipe_create'),
     path('create/ingredients', views.recipe_ingredients_create_view, name='recipe_ingredients_create'),
+    path('update/ingredients/<int:id>', views.recipe_ingredients_update_view, name='recipe_ingredients_update'),
 ]

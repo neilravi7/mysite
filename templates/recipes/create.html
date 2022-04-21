@@ -1,11 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1> Create Recipe Ingredients </h1>
-<!-- <form action='{% url "article_create" %}' method="post"> -->
-<form action='{% url "recipe_ingredients_create" %}' method="post">
-    {% csrf_token %}
-    <!-- <input type="text" , name="title">
-    <textarea name="content"></textarea> -->
+{% if action == "create_recipe" %}
+    <h1> Create Recipe</h1>
+    <form action='{% url "recipe_create" %}' method="post">
+{% elif action == "create_recipe_ingredient" %}
+    <form action='{% url "recipe_create" %}' method="post">
+    <h1> Create Recipe Ingredients </h1>
+{% elif action == "update_recipe" %}
+    <form action='{% url "recipe_ingredients_create" %}' method="post">
+    <h1> Create Recipe Ingredient </h1>
+{% elif action == "update_recipe_ingredient"%}
+    <h1> Update Recipe Ingredient </h1>
+    <form action='{% url "recipe_ingredients_create" %}' method="post">
+
+{% endif %}        
     {{form.as_p}}
     <input type="submit" name="submit">
 </form>

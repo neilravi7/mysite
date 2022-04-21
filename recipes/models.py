@@ -97,5 +97,3 @@ class RecipeIngredients(models.Model):
            self.quantity_as_float = str_to_number
            
         return super().save(*args, kwargs)
-
-
