@@ -117,5 +117,37 @@ def base_template_view(request):
     context = {
         "text":"test view of base template."
     }
-    return render(request, 'main_base.html', context=context)
+    return render(request, 'article/main_list_article.html', context=context)
     # return render(request, 'test_htmx.html', context=context)
+
+def recipe_and_ingredients_view(request):
+    context = {
+        'recipe_form':RecipeModelForm(),
+        'recipe_ingredient_from':RecipeIngredientsModelForm()
+    }
+    if request.method == 'POST':
+        recipe_form = RecipeModelForm(request.POST or None)
+        recipe_ingredient_from = RecipeIngredientsModelForm(request.POST or None)
+        context['recipe_form'] = recipe_form
+        context['recipe_ingredient_from'] = recipe_ingredient_from
+        for rec in Recipe.objects.all():
+            print("-> ", rec.name)
+
+        if all([recipe_form.is_valid(), recipe_ingredient_from.is_valid()]):
+            print("Cleaned Data: ", recipe_form.cleaned_data)
+            
+            recipe_obj = recipe_form.save(commit=False)
+            # print("name : ", recipe_obj.name)
+            ingredient_obj = recipe_ingredient_from.save(commit=False)
+            recipe_obj.user_id = request.user.id
+            # print("Who :", request.user)
+            recipe_obj.save()
+            
+            if recipe_obj.pk:
+                print("recipe created")    
+                ingredient_obj.recipe_id = recipe_obj.pk
+                ingredient_obj.save()
+                if ingredient_obj.pk:
+                    print("Ingredients created")
+
+    return render(request, 'recipes/create_both.html', context=context)

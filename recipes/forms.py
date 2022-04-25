@@ -25,7 +25,7 @@ class RecipeForm(forms.Form):
 class RecipeIngredientsModelForm(forms.ModelForm):
     class Meta:
         model = RecipeIngredients
-        fields = ['recipe', 'name', 'description', 'directions', 'quantity', 'unit']
+        fields = ['name', 'description', 'directions', 'quantity', 'unit']
     
     def clean(self):
         cleaned_data = self.cleaned_data
