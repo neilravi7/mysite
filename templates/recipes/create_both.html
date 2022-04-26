@@ -3,10 +3,12 @@
 <h1>Create Together</h1>
 <form action='{% url "create_both" %}' method="post">
     {% csrf_token %}
-    <h1> Add Recipe </h1>
+    <h3> Add Recipe </h3>
         {{recipe_form.as_p}}
-    <h1> Add Recipe Ingredients </h1>
-        {{recipe_ingredient_from.as_p}}
+    {% if recipe_ingredient_form %}
+        <h3> Add Recipe Ingredients </h3>
+        {{recipe_ingredient_form.as_p}}
+    {% endif %}
     <input type="submit" name="submit">
 </form>
 {% endblock content %}

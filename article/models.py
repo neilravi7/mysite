@@ -43,7 +43,6 @@ class Article(models.Model):
         f = Fernet(key)
         fernet_string = bytes(self.slug, 'utf-8')
         encoded_string = f.encrypt(fernet_string)
-        print("Get Absolute Url called ")
         return f'{randint(567, 8750432)}/{encoded_string.decode()}'
 
     def save(self, *args, **kwargs):
