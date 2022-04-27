@@ -1,4 +1,5 @@
 {% extends 'main_base.html' %}
+{% load static %}
 {% block content %}
 <!-- Begin Featured
 ================================================== -->
@@ -8,20 +9,21 @@
     </div>
     <div class="card-columns listfeaturedtag">
 
+        {% for recipe in recipes %}
         <!-- begin post -->
         <div class="card">
             <div class="row">
                 <div class="col-md-5 wrapthumbnail">
                     <a href="post.html">
-                        <div class="thumbnail" style="background-image:url(assets/img/demopic/1.jpg);">
+                        <div class="thumbnail" style="background-image:url({% static 'assets/img/demopic/1.jpg' %});">
                         </div>
                     </a>
                 </div>
+
                 <div class="col-md-7">
                     <div class="card-block">
-                        <h2 class="card-title"><a href="post.html">We're living some strange times</a></h2>
-                        <h4 class="card-text">This is a longer card with supporting text below as a natural
-                            lead-in to additional content. This content is a little bit longer.</h4>
+                        <h2 class="card-title"><a href="post.html">{{recipe.name}}</a></h2>
+                        <h4 class="card-text"> {{recipe.description}} </h4>
                         <div class="metafooter">
                             <div class="wrapfooter">
                                 <span class="meta-footer-thumb">
@@ -30,8 +32,8 @@
                                             alt="Sal"></a>
                                 </span>
                                 <span class="author-meta">
-                                    <span class="post-name"><a href="author.html">Steve</a></span><br>
-                                    <span class="post-date">22 July 2017</span><span class="dot"></span><span
+                                    <span class="post-name"><a href="author.html">{{recipe.user.first_name}} {{recipe.user.last_name}}</a></span><br>
+                                    <span class="post-date">{{recipe.created}}</span><span class="dot"></span><span
                                         class="post-read">6 min read</span>
                                 </span>
                                 <span class="post-read-more"><a href="post.html" title="Read Story"><svg
@@ -47,19 +49,21 @@
             </div>
         </div>
         <!-- end post -->
+        {% endfor %}
     </div>
 </section>
+{% endblock %}
 <!-- End Featured
 ================================================== -->
 <!-- Begin List Posts
 ================================================== -->
-<section class="recent-posts">
+<!-- <section class="recent-posts">
     <div class="section-title">
         <h2><span>All Stories</span></h2>
     </div>
     <div class="card-columns listrecent">
 
-        <!-- begin post -->
+        begin post
         <div class="card">
             <a href="post.html">
                 <img class="img-fluid" src="assets/img/demopic/5.jpg" alt="">
@@ -90,11 +94,11 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- end post -->
 
         <!-- begin post -->
-        <div class="card">
+        <!-- <div class="card">
             <a href="post.html">
                 <img class="img-fluid" src="assets/img/demopic/6.jpg" alt="">
             </a>
@@ -123,10 +127,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- end post -->
-    </div>
-</section>
+    <!-- </div>
+</section> -->
 <!-- End List Posts
 ================================================== -->
-{% endblock%}

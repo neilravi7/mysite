@@ -21,7 +21,8 @@ def recipe_list_view(request):
     context = {
         "recipes" : recipes
     }
-    return render(request, 'recipes/list.html', context)
+    return render(request, 'recipes/main_list_article.html', context)
+    # return render(request, 'recipes/list.html', context)
 
 def recipe_detail_view(request, number, enc_string):
     slug = url_encode_utils(enc_string, "decode")
@@ -138,16 +139,13 @@ def recipe_and_ingredients_view(request):
         recipe_ingredient_form = RecipeIngredientsModelForm(request.POST or None)
         context['recipe_form'] = recipe_form
         context['recipe_ingredient_form'] = recipe_ingredient_form
-        # for rec in Recipe.objects.all():
-        #     print("-> ", rec.name)
 
         if all([recipe_form.is_valid(), recipe_ingredient_form.is_valid()]):
-        # if all([recipe_form.is_valid()]):
-
-            print("cleaned data from recipe: ", recipe_form.cleaned_data)
-            print("cleaned data from ingredients: ", recipe_ingredient_form.cleaned_data)
+        
+            # print("cleaned data from recipe: ", recipe_form.cleaned_data)
+            # print("cleaned data from ingredients: ", recipe_ingredient_form.cleaned_data)
             recipe_obj = recipe_form.save(commit=False)
-            print("name : ", recipe_obj.name)
+            # print("name : ", recipe_obj.name)
             recipe_obj.user_id = request.user.id
             recipe_obj.save()
 
