@@ -1,11 +1,13 @@
 from operator import imod
+from urllib import request
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
-from recipes.forms import RecipeForm, RecipeModelForm, RecipeIngredientsModelForm
+from recipes.forms import RecipeForm, RecipeModelForm, RecipeIngredientsModelForm, IngredientsFormset
 from recipes.models import Recipe, RecipeIngredients
 from mysite.utils import url_encode_utils
 from django.urls import reverse
+from django import forms 
 # Create your views here.
 
 # class RecipeListView(ListView):
@@ -118,7 +120,7 @@ def base_template_view(request):
     context = {
         "text":"test view of base template."
     }
-    return render(request, 'article/main_list_article.html', context=context)
+    return render(request, 'base.html', context=context)
     # return render(request, 'test_htmx.html', context=context)
 
 def recipe_and_ingredients_view(request):
@@ -132,26 +134,63 @@ def recipe_and_ingredients_view(request):
     """    
     context = {
         'recipe_form':RecipeModelForm(),
-        'recipe_ingredient_form':RecipeIngredientsModelForm()
+        # 'recipe_ingredient_form':RecipeIngredientsModelForm(),
+        'ingredient_formset':IngredientsFormset()
     }
     if request.method == 'POST':
         recipe_form = RecipeModelForm(request.POST or None)
-        recipe_ingredient_form = RecipeIngredientsModelForm(request.POST or None)
-        context['recipe_form'] = recipe_form
-        context['recipe_ingredient_form'] = recipe_ingredient_form
 
-        if all([recipe_form.is_valid(), recipe_ingredient_form.is_valid()]):
-        
-            # print("cleaned data from recipe: ", recipe_form.cleaned_data)
-            # print("cleaned data from ingredients: ", recipe_ingredient_form.cleaned_data)
+        ingredient_formset = IngredientsFormset(request.POST or None)
+        context['ingredient_formset'] = ingredient_formset
+        context['recipe_form'] = recipe_form
+
+        if all([recipe_form.is_valid()]):
             recipe_obj = recipe_form.save(commit=False)
-            # print("name : ", recipe_obj.name)
             recipe_obj.user_id = request.user.id
             recipe_obj.save()
 
-            if recipe_obj.pk:
-                ingredient_obj = recipe_ingredient_form.save(commit=False)
-                ingredient_obj.recipe_id = recipe_obj.id
-                ingredient_obj.save()
+            print("recipe obj saved")
+            for ri_form in ingredient_formset:
+                if ri_form.is_valid():
+                    ingredient_obj = ri_form.save(commit=False)
+                    print("ingredient_obj", ingredient_obj)
+                    ingredient_obj.recipe = recipe_obj
+                    ingredient_obj.save()
+                    print("ingredient_obj saved")
 
     return render(request, 'recipes/create_both.html', context=context)
+
+def recipe_ingredients_update_view(request, id):
+    """
+        Update recipe object and it's ingredients together.
+        all ingredients objects saved together.
+        set_all() : all ingredients objects.
+
+    Args:
+        request (Update): _description_
+        id (_type_): instance id (recipe ID)
+
+    Returns:
+        _type_: success massage (HTTPS 200) at success 
+    """    
+    recipe_obj = Recipe.objects.get(id=id)
+    recipe_form = RecipeModelForm(request.POST or None, instance=recipe_obj)
+    # ingredient_form = RecipeIngredientsModelForm(request.POST or None)
+    qs = recipe_obj.recipeingredients_set.all()
+    RecipeIngredientsFormset = forms.modelformset_factory(RecipeIngredients, form=RecipeIngredientsModelForm, extra=0)
+    ingredient_formset = RecipeIngredientsFormset(request.POST or None, queryset=qs)
+    
+    context = {
+        'recipe_form':recipe_form,
+        'ingredient_formset': ingredient_formset
+    }
+    if all([recipe_form.is_valid(), ingredient_formset.is_valid()]):
+        recipe_obj = recipe_form.save(commit=False)
+        recipe_obj.save() 
+        for ingredient in ingredient_formset:
+            print("ingredients updated")
+            ingredient_obj = ingredient.save(commit=False)
+            ingredient_obj.recipe = recipe_obj
+            ingredient_obj.save()
+    
+    return render(request, 'recipes/dynamic_formset.html', context=context)  

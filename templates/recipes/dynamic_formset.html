@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Create Together</h1>
+<form action='{% url "create_both" %}' method="post">
+    {% csrf_token %}
+    <h3> Recipe </h3>
+    <div>
+        {{recipe_form.as_p}}
+    </div>
+    {% if ingredient_formset %}
+        {{ingredient_formset.management_form}}
+        <h3>Ingredients</h3>
+        {% for ingredient in ingredient_formset %}
+            <div>
+               {{ingredient.as_p}} 
+            </div>
+        {% endfor %}
+    {% endif %}
+    <input type="submit" name="submit">
+</form>
+{% endblock content %}
